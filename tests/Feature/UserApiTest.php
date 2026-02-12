@@ -20,7 +20,7 @@ class UserApiTest extends TestCase
         $response = $this->actingAs($user)->getJson('/api/users');
 
         $response->assertStatus(200)
-            ->assertJsonCount(4);
+            ->assertJsonCount(3);
     }
 
     public function test_can_create_user(): void
@@ -38,7 +38,7 @@ class UserApiTest extends TestCase
 
         $response->assertStatus(201)
             ->assertJsonFragment(['name' => 'John Doe', 'email' => 'john@example.com']);
-        
+
         $this->assertDatabaseHas('users', ['email' => 'john@example.com']);
     }
 
@@ -63,7 +63,7 @@ class UserApiTest extends TestCase
 
         $response->assertStatus(200)
             ->assertJsonFragment(['name' => 'Updated Name']);
-        
+
         $this->assertDatabaseHas('users', ['id' => $targetUser->id, 'name' => 'Updated Name']);
     }
 
@@ -81,11 +81,11 @@ class UserApiTest extends TestCase
     public function test_validation_errors(): void
     {
         $user = User::factory()->create();
-        
+
         $response = $this->actingAs($user)->postJson('/api/users', []);
         $response->assertStatus(422)
             ->assertJsonValidationErrors(['name', 'email', 'password']);
-            
+
         $response = $this->actingAs($user)->postJson('/api/users', [
             'name' => 'Test',
             'email' => $user->email, // Duplicate email

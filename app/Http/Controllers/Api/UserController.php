@@ -21,7 +21,7 @@ class UserController extends Controller
             'status' => 'success',
             'data' => User::filter(request()->only(['search', 'status']))->paginate(10),
             'message' => 'User saved successfully',
-        ], 201);
+        ], 200);
     }
 
     /**
@@ -79,6 +79,6 @@ class UserController extends Controller
         return response([
             'status' => 'success',
             'message' => 'User deleted successfully!'
-        ]);
+        ], 204);
     }
 }
