@@ -22,6 +22,6 @@ class DatabaseSeeder extends Seeder
             UserSeeder::class,
         ]);
 
-        Company::factory(10)->create();
+        Company::factory(count: 20)->create();
     }
 }
