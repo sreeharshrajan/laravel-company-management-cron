@@ -13,13 +13,22 @@ class UserController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
         Gate::authorize('viewAny', User::class);
 
-        $users = User::all();
+        $filters = $request->only(['search', 'status']);
 
-        return view('users.index', compact('users'));
+        $users = User::filter($filters)
+                    ->latest()
+                    ->paginate(10)
+                    ->withQueryString();
+
+        if ($request->ajax()) {
+            return view('users.partials.table', compact('users'))->render();
+        }
+
+        return view('users.index', compact('users', 'filters'));
     }
 
     /**

@@ -10,13 +10,6 @@
             <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="p-6 text-gray-900 dark:text-gray-100">
 
-                    <div class="mb-4">
-                        <a href="{{ route('users.create') }}"
-                            class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
-                            Create User
-                        </a>
-                    </div>
-
                     @if ($message = Session::get('success'))
                         <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative mb-4"
                             role="alert">
@@ -31,54 +24,103 @@
                         </div>
                     @endif
 
-                    <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
-                        <thead class="bg-gray-50 dark:bg-gray-700">
-                            <tr>
-                                <th scope="col"
-                                    class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
-                                    Name</th>
-                                <th scope="col"
-                                    class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
-                                    Email</th>
-                                <th scope="col"
-                                    class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
-                                    Role</th>
-                                <th scope="col"
-                                    class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
-                                    Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody class="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
-                            @foreach ($users as $user)
-                                <tr>
-                                    <td class="px-6 py-4 whitespace-nowrap">{{ $user->name }}</td>
-                                    <td class="px-6 py-4 whitespace-nowrap">{{ $user->email }}</td>
-                                    <td class="px-6 py-4 whitespace-nowrap">
-                                        <span
-                                            class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full {{ $user->role === 'admin' ? 'bg-purple-100 text-purple-800' : 'bg-gray-100 text-gray-800' }}">
-                                            {{ ucfirst($user->role) }}
-                                        </span>
-                                    </td>
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                                        <a href="{{ route('users.edit', $user) }}"
-                                            class="text-yellow-600 hover:text-yellow-900 mr-3">Edit</a>
+                    <div class="flex flex-col sm:flex-row justify-between items-center mb-4 space-y-4 sm:space-y-0">
+                        <a href="{{ route('users.create') }}"
+                            class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+                            Create User
+                        </a>
 
-                                        @if($user->id !== auth()->id())
-                                            <form action="{{ route('users.destroy', $user) }}" method="POST"
-                                                class="inline-block" onsubmit="return confirm('Are you sure you want to delete this user?');">
-                                                @csrf
-                                                @method('DELETE')
-                                                <button type="submit"
-                                                    class="text-red-600 hover:text-red-900">Delete</button>
-                                            </form>
-                                        @endif
-                                    </td>
-                                </tr>
-                            @endforeach
-                        </tbody>
-                    </table>
+                        <form action="{{ route('users.index') }}" method="GET"
+                            class="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-2">
+                            <input type="text" name="search" placeholder="Search by name or email"
+                                value="{{ request('search') }}"
+                                class="border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 focus:border-indigo-500 dark:focus:border-indigo-600 focus:ring-indigo-500 dark:focus:ring-indigo-600 rounded-md shadow-sm">
+
+                            <select name="status"
+                                class="border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 focus:border-indigo-500 dark:focus:border-indigo-600 focus:ring-indigo-500 dark:focus:ring-indigo-600 rounded-md shadow-sm">
+                                <option value="">All Status</option>
+                                <option value="active" {{ request('status') === 'active' ? 'selected' : '' }}>Active
+                                </option>
+                                <option value="inactive" {{ request('status') === 'inactive' ? 'selected' : '' }}>
+                                    Inactive</option>
+                            </select>
+
+                            <button type="submit"
+                                class="bg-gray-800 dark:bg-gray-200 text-white dark:text-gray-800 hover:bg-gray-700 dark:hover:bg-white font-bold py-2 px-4 rounded">
+                                Filter
+                            </button>
+                        </form>
+                    </div>
+
+                    <div id="users-table-container">
+                        @include('users.partials.table')
+                    </div>
                 </div>
             </div>
         </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            function fetchUsers(url) {
+                var search = $('input[name="search"]').val();
+                var status = $('select[name="status"]').val();
+                var currentUrl = url || "{{ route('users.index') }}";
+
+                $.ajax({
+                    url: currentUrl,
+                    type: 'GET',
+                    data: {
+                        search: search,
+                        status: status
+                    },
+                    success: function(response) {
+                        $('#users-table-container').html(response);
+                        // Update browser URL without reloading
+                        var newUrl = currentUrl + (currentUrl.includes('?') ? '&' : '?') + $.param({
+                            search: search,
+                            status: status
+                        });
+                        window.history.pushState({
+                            path: newUrl
+                        }, '', newUrl);
+                    },
+                    error: function(xhr) {
+                        console.error('Error fetching users:', xhr);
+                    }
+                });
+            }
+
+            // Search input keyup
+            var timer;
+            $('input[name="search"]').on('input', function() {
+                clearTimeout(timer);
+                timer = setTimeout(function() {
+                    fetchUsers();
+                }, 500); // Debounce
+            });
+
+            // Status change
+            $('select[name="status"]').on('change', function() {
+                fetchUsers();
+            });
+
+            // Pagination click
+            $(document).on('click', '.pagination a', function(e) {
+                e.preventDefault();
+                var url = $(this).attr('href');
+                fetchUsers(url);
+            });
+
+            // Prevent form submission
+            $('form').on('submit', function(e) {
+                e.preventDefault();
+                fetchUsers();
+            });
+        });
+    </script>
+    </div>
+    </div>
     </div>
 </x-app-layout>
