@@ -20,6 +20,8 @@ class UserSeeder extends Seeder
             'name' => 'Admin User',
             'password' => Hash::make('password'),
             'role' => 'admin',
+            'status' => 'active',
+            'last_active_at' => now(),
         ]);
 
         // Regular User
@@ -29,6 +31,8 @@ class UserSeeder extends Seeder
             'name' => 'Regular User',
             'password' => Hash::make('password'),
             'role' => 'user',
+            'status' => 'active',
+            'last_active_at' => now()->subDays(30), // Last active 30 days ago
         ]);
     }
 }
