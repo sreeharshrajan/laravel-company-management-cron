@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StoreCompanyRequest;
 use App\Http\Requests\UpdateCompanyRequest;
 use App\Models\Company;
+use Illuminate\Support\Facades\Gate;
 
 class CompanyController extends Controller
 {
@@ -13,6 +14,8 @@ class CompanyController extends Controller
      */
     public function index()
     {
+        Gate::authorize('viewAny', Company::class);
+
         $companies = Company::latest()->paginate(10);
 
         return view('companies.index', compact('companies'));
@@ -23,6 +26,8 @@ class CompanyController extends Controller
      */
     public function create()
     {
+        Gate::authorize('create', Company::class);
+
         return view('companies.create');
     }
 
@@ -31,6 +36,8 @@ class CompanyController extends Controller
      */
     public function store(StoreCompanyRequest $request)
     {
+        Gate::authorize('create', Company::class);
+
         Company::create($request->validated());
 
         return redirect()->route('companies.index')
@@ -42,6 +49,8 @@ class CompanyController extends Controller
      */
     public function show(Company $company)
     {
+        Gate::authorize('view', $company);
+
         return view('companies.show', compact('company'));
     }
 
@@ -50,6 +59,8 @@ class CompanyController extends Controller
      */
     public function edit(Company $company)
     {
+        Gate::authorize('update', $company);
+
         return view('companies.edit', compact('company'));
     }
 
@@ -58,6 +69,8 @@ class CompanyController extends Controller
      */
     public function update(UpdateCompanyRequest $request, Company $company)
     {
+        Gate::authorize('update', $company);
+
         $company->update($request->validated());
 
         return redirect()->route('companies.index')
@@ -69,6 +82,8 @@ class CompanyController extends Controller
      */
     public function destroy(Company $company)
     {
+        Gate::authorize('delete', $company);
+
         $company->delete();
 
         return redirect()->route('companies.index')

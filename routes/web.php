@@ -1,8 +1,11 @@
 <?php
 
+use App\Http\Controllers\CompanyController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
+
+require __DIR__.'/auth.php';
 
 Route::get('/', function () {
     return view('welcome');
@@ -18,15 +21,7 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
-require __DIR__.'/auth.php';
-
-use App\Http\Controllers\CompanyController;
-
 Route::middleware(['auth'])->group(function () {
-    // All authenticated users can view companies
-    Route::get('/companies', [CompanyController::class, 'index'])->name('companies.index');
-    Route::get('/companies/{company}', [CompanyController::class, 'show'])->name('companies.show');
-
     // Admin only routes
     Route::middleware(['admin'])->group(function () {
         Route::get('/companies/create', [CompanyController::class, 'create'])->name('companies.create');
@@ -37,4 +32,8 @@ Route::middleware(['auth'])->group(function () {
 
         Route::resource('users', UserController::class);
     });
+
+    // All authenticated users can view companies
+    Route::get('/companies', [CompanyController::class, 'index'])->name('companies.index');
+    Route::get('/companies/{company}', [CompanyController::class, 'show'])->name('companies.show');
 });

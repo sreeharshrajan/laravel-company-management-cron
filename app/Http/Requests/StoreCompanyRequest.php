@@ -9,9 +9,12 @@ class StoreCompanyRequest extends FormRequest
     /**
      * Determine if the user is authorized to make this request.
      */
+    /**
+     * Determine if the user is authorized to make this request.
+     */
     public function authorize(): bool
     {
-        return true;
+        return $this->user()->can('create', \App\Models\Company::class);
     }
 
     /**
