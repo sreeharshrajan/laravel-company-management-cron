@@ -30,7 +30,13 @@ class UserSeeder extends Seeder
             'name' => 'Regular User',
             'password' => Hash::make('password'),
             'role' => 'user',
-            'last_active_at' => now()->subDays(30), // Last active 30 days ago
+            'last_active_at' => now(),
         ]);
+
+        // Create 10 Active Users
+        User::factory()->count(10)->create();
+
+        // Create 5 Inactive Users (for testing Purge)
+        User::factory()->count(5)->inactive()->create();
     }
 }

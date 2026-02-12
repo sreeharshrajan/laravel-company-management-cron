@@ -12,6 +12,9 @@
                 Role</th>
             <th scope="col"
                 class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+                Last Active</th>
+            <th scope="col"
+                class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
                 Actions</th>
         </tr>
     </thead>
@@ -25,6 +28,9 @@
                         class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full {{ $user->role === 'admin' ? 'bg-purple-100 text-purple-800' : 'bg-gray-100 text-gray-800' }}">
                         {{ ucfirst($user->role) }}
                     </span>
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap">
+                    {{ $user->last_active_at ? $user->last_active_at->diffForHumans() : 'Never' }}
                 </td>
                 <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
                     <a href="{{ route('users.edit', $user) }}"

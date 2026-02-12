@@ -1,9 +1,23 @@
 <x-app-layout>
     <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
-            {{ __('Users') }}
-        </h2>
+        <div class="flex justify-between items-center my-4">
+            <div class="flex flex-col">
+                <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
+                    {{ __('Users') }}
+                </h2>
+                <p class="text-gray-500 dark:text-gray-400">Total Users: {{ $users->total() }}</p>
+            </div>
+            @if (auth()->user()->isAdmin())
+                <div class="mb-4">
+                    <a href="{{ route('users.create') }}"
+                        class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+                        Create User
+                    </a>
+                </div>
+            @endif
+        </div>
     </x-slot>
+
 
     <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
@@ -25,11 +39,7 @@
                     @endif
 
                     <div class="flex flex-col sm:flex-row justify-between items-center mb-4 space-y-4 sm:space-y-0">
-                        <a href="{{ route('users.create') }}"
-                            class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
-                            Create User
-                        </a>
-
+                        <div></div>
                         <form action="{{ route('users.index') }}" method="GET"
                             class="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-2">
                             <input type="text" name="search" placeholder="Search by name or email"

@@ -1,23 +1,27 @@
 <x-app-layout>
     <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
-            {{ __('Companies') }}
-        </h2>
+        <div class="flex justify-between items-center my-4">
+            <div class="flex flex-col">
+                <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
+                    {{ __('Companies') }}
+                </h2>
+                <p class="text-gray-500 dark:text-gray-400">Total Companies: {{ $companies->total() }}</p>
+            </div>
+            @if (auth()->user()->isAdmin())
+                <div class="mb-4">
+                    <a href="{{ route('companies.create') }}"
+                        class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+                        Create Company
+                    </a>
+                </div>
+            @endif
+        </div>
     </x-slot>
 
     <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="p-6 text-gray-900 dark:text-gray-100">
-
-                    @if (auth()->user()->isAdmin())
-                        <div class="mb-4">
-                            <a href="{{ route('companies.create') }}"
-                                class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
-                                Create Company
-                            </a>
-                        </div>
-                    @endif
 
                     @if ($message = Session::get('success'))
                         <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative mb-4"
