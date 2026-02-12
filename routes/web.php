@@ -30,7 +30,7 @@ Route::middleware(['auth'])->group(function () {
         Route::put('/companies/{company}', [CompanyController::class, 'update'])->name('companies.update');
         Route::delete('/companies/{company}', [CompanyController::class, 'destroy'])->name('companies.destroy');
 
-        Route::resource('users', UserController::class);
+        Route::resource('users', UserController::class)->names('users');
     });
 
     // All authenticated users can view companies
