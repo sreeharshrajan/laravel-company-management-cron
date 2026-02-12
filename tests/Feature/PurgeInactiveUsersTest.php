@@ -2,12 +2,13 @@
 
 namespace Tests\Feature;
 
+use App\Jobs\PurgeInactiveUsersJob;
 use App\Models\PurgeLog;
 use App\Models\User;
+use Carbon\Carbon;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Tests\TestCase;
 use Illuminate\Support\Facades\Bus;
-use App\Jobs\PurgeInactiveUsersJob;
+use Tests\TestCase;
 
 class PurgeInactiveUsersTest extends TestCase
 {
@@ -22,12 +23,12 @@ class PurgeInactiveUsersTest extends TestCase
 
         // Active user (active 10 days ago)
         $activeUser = User::factory()->create([
-            'last_active_at' => \Carbon\Carbon::now()->subDays(10),
+            'last_active_at' => Carbon::now()->subDays(10),
         ]);
 
         // Inactive user (inactive 31 days ago)
         $inactiveUser = User::factory()->create([
-            'last_active_at' => \Carbon\Carbon::now()->subDays(31),
+            'last_active_at' => Carbon::now()->subDays(31),
         ]);
 
         $this->artisan('users:purge-inactive')

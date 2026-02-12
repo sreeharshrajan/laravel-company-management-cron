@@ -20,9 +20,9 @@ class UserController extends Controller
         $filters = $request->only(['search', 'status']);
 
         $users = User::filter($filters)
-                    ->latest()
-                    ->paginate(10)
-                    ->withQueryString();
+            ->latest('last_active_at')
+            ->paginate(10)
+            ->withQueryString();
 
         if ($request->ajax()) {
             return view('users.partials.table', compact('users'))->render();

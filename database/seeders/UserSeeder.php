@@ -20,7 +20,6 @@ class UserSeeder extends Seeder
             'name' => 'Admin User',
             'password' => Hash::make('password'),
             'role' => 'admin',
-            'last_active_at' => now(),
         ]);
 
         // Regular User
@@ -30,7 +29,6 @@ class UserSeeder extends Seeder
             'name' => 'Regular User',
             'password' => Hash::make('password'),
             'role' => 'user',
-            'last_active_at' => now(),
         ]);
 
         // Create 10 Active Users
