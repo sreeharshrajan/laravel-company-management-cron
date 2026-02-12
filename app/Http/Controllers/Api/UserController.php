@@ -17,7 +17,11 @@ class UserController extends Controller
      */
     public function index()
     {
-        return User::all();
+        return response()->json([
+            'status' => 'success',
+            'data' => User::filter(request()->only(['search', 'status']))->paginate(10),
+            'message' => 'User saved successfully',
+        ], 201);
     }
 
     /**
@@ -32,7 +36,11 @@ class UserController extends Controller
             'role' => $request->role,
         ]);
 
-        return response()->json($user, 201);
+        return response()->json([
+            'status' => 'success',
+            'data' => $user,
+            'message' => 'User saved successfully',
+        ], 201);
     }
 
     /**
@@ -40,7 +48,11 @@ class UserController extends Controller
      */
     public function show(User $user)
     {
-        return $user;
+        return response()->json([
+            'status' => 'success',
+            'data' => $user,
+            'message' => 'User retrieved successfully',
+        ]);
     }
 
     /**
@@ -50,7 +62,11 @@ class UserController extends Controller
     {
         $user->update($request->validated());
 
-        return $user;
+        return response()->json([
+            'status' => 'success',
+            'data' => $user,
+            'message' => 'User updated successfully',
+        ]);
     }
 
     /**
@@ -60,6 +76,9 @@ class UserController extends Controller
     {
         $user->delete();
 
-        return response()->noContent();
+        return response([
+            'status' => 'success',
+            'message' => 'User deleted successfully!'
+        ]);
     }
 }

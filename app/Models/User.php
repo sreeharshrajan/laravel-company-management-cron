@@ -33,8 +33,8 @@ class User extends Authenticatable
     {
         $query->when($filters['search'] ?? null, function ($query, $search) {
             $query->where(function ($query) use ($search) {
-                $query->where('name', 'like', '%'.$search.'%')
-                      ->orWhere('email', 'like', '%'.$search.'%');
+                $query->where('name', 'like', '%' . $search . '%')
+                    ->orWhere('email', 'like', '%' . $search . '%');
             });
         })->when($filters['status'] ?? null, function ($query, $status) {
             if ($status === 'active') {
@@ -42,7 +42,7 @@ class User extends Authenticatable
             } elseif ($status === 'inactive') {
                 $query->where(function ($query) {
                     $query->where('last_active_at', '<', now()->subDays(30))
-                          ->orWhereNull('last_active_at');
+                        ->orWhereNull('last_active_at');
                 });
             }
         });
