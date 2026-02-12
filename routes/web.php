@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -33,5 +34,7 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/companies/{company}/edit', [CompanyController::class, 'edit'])->name('companies.edit');
         Route::put('/companies/{company}', [CompanyController::class, 'update'])->name('companies.update');
         Route::delete('/companies/{company}', [CompanyController::class, 'destroy'])->name('companies.destroy');
+
+        Route::resource('users', UserController::class);
     });
 });
